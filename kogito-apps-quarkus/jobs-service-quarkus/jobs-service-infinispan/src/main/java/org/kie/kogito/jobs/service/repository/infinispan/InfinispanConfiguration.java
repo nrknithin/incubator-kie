@@ -24,7 +24,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.eclipse.microprofile.health.HealthCheck;
 import org.eclipse.microprofile.health.Readiness;
 import org.infinispan.client.hotrod.RemoteCacheManager;
+import org.infinispan.client.hotrod.marshall.MarshallerUtil;
 import org.kie.kogito.infinispan.health.InfinispanHealthCheck;
+import org.kie.kogito.jobs.service.repository.infinispan.marshaller.TriggerMarshallerProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import io.quarkus.runtime.StartupEvent;
 
@@ -40,6 +44,8 @@ import static org.kie.kogito.jobs.service.repository.infinispan.InfinispanConfig
 
 @ApplicationScoped
 public class InfinispanConfiguration {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(InfinispanConfiguration.class);
 
     private AtomicBoolean initialized = new AtomicBoolean(Boolean.FALSE);
 
@@ -64,6 +70,14 @@ public class InfinispanConfiguration {
     void initializeCaches(@Observes @Priority(Interceptor.Priority.PLATFORM_BEFORE) StartupEvent startupEvent,
             Instance<RemoteCacheManager> remoteCacheManager,
             Event<InfinispanInitialized> initializedEvent) {
+        // ProtoStream 6 no longer indexes interface-typed marshallers by Java class; this provider
+        // keeps Trigger-typed values resolvable (see TriggerMarshallerProvider).
+        try {
+            MarshallerUtil.getSerializationContext(remoteCacheManager.get())
+                    .registerMarshallerProvider(new TriggerMarshallerProvider());
+        } catch (RuntimeException e) {
+            LOGGER.warn("ProtoStream SerializationContext is not available, Trigger marshalling may not work: {}", e.getMessage());
+        }
         Optional.ofNullable(remoteCacheManager.get().getCache(JOB_DETAILS))
                 .ifPresent(c -> {
                     initializedEvent.fire(new InfinispanInitialized());
