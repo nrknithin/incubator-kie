@@ -18,6 +18,9 @@
  */
 package org.kie.kogito.quarkus.rules.hotreload.newunit;
 
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.net.ServerSocket;
 import java.util.List;
 
 import org.eclipse.microprofile.config.ConfigProvider;
@@ -56,6 +59,13 @@ public class NewUnitIT {
                     "    /persons[adult, $name: name];\n" +
                     "end";
 
+    // Share a dynamically chosen free port between the dev-mode app and this test via a
+    // system property (highest-ordinal config source); since Quarkus 3.33 dev mode no
+    // longer writes its resolved port back for tests to read.
+    static {
+        System.setProperty("quarkus.http.port", findFreePort());
+    }
+
     @RegisterExtension
     final static QuarkusDevModeTest test = new QuarkusDevModeTest().setArchiveProducer(
             () -> ShrinkWrap.create(JavaArchive.class)
@@ -83,5 +93,13 @@ public class NewUnitIT {
 
         assertEquals(1, names.size());
         assertTrue(names.contains("Mario"));
+    }
+
+    private static String findFreePort() {
+        try (ServerSocket socket = new ServerSocket(0)) {
+            return String.valueOf(socket.getLocalPort());
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
     }
 }
