@@ -1,0 +1,16 @@
+<infinispan>
+    <cache-container shutdown-hook="DEFAULT">
+        <local-cache name="JOB_DETAILS_V2">
+            <encoding media-type="application/x-protostream"/>
+            <indexing storage="filesystem" path="jobs-service">
+                <indexed-entities>
+                    <indexed-entity>job.service.JobDetails</indexed-entity>
+                    <indexed-entity>job.service.Trigger</indexed-entity>
+                </indexed-entities>
+            </indexing>
+            <persistence>
+                <file-store/>
+            </persistence>
+        </local-cache>
+    </cache-container>
+</infinispan>
