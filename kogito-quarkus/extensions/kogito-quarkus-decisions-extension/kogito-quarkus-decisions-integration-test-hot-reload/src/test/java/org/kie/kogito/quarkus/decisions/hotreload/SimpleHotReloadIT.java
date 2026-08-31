@@ -18,15 +18,12 @@
  */
 package org.kie.kogito.quarkus.decisions.hotreload;
 
-import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.net.ServerSocket;
-
-import org.eclipse.microprofile.config.ConfigProvider;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
+import org.kie.kogito.test.utils.SocketUtils;
 
 import io.quarkus.test.QuarkusDevModeTest;
 import io.restassured.RestAssured;
@@ -46,16 +43,15 @@ public class SimpleHotReloadIT {
     private static final String RESOURCE_FILE_PATH = PACKAGE.replace('.', '/');
     private static final String DMN_RESOURCE_FILE = RESOURCE_FILE_PATH + "/TrafficViolation.dmn";
 
-    // Share a dynamically chosen free port between the dev-mode app and this test via a
-    // system property (highest-ordinal config source); since Quarkus 3.33 dev mode no
-    // longer writes its resolved port back for tests to read.
-    static {
-        System.setProperty("quarkus.http.port", findFreePort());
-    }
+    // Pick a free port up front and hand it to the dev-mode app through the archive's
+    // application.properties; since Quarkus 3.33 dev mode no longer writes its resolved
+    // port back for tests to read.
+    final static int httpPort = SocketUtils.findAvailablePort();
 
     @RegisterExtension
     final static QuarkusDevModeTest test = new QuarkusDevModeTest().setArchiveProducer(
             () -> ShrinkWrap.create(JavaArchive.class)
+                    .addAsResource(new StringAsset("quarkus.kogito.devservices.enabled=false\nquarkus.http.port=" + httpPort), "application.properties")
                     .addAsResource("TrafficViolation.txt", DMN_RESOURCE_FILE));
 
     @Test
@@ -68,7 +64,6 @@ public class SimpleHotReloadIT {
     }
 
     private void executeTest(String path) {
-        String httpPort = ConfigProvider.getConfig().getValue("quarkus.http.port", String.class);
         ValidatableResponse response = given()
                 .baseUri("http://localhost:" + httpPort)
                 .contentType(ContentType.JSON)
@@ -90,13 +85,5 @@ public class SimpleHotReloadIT {
 
         response.statusCode(200)
                 .body("'Should the driver be suspended?'", is("No"));
-    }
-
-    private static String findFreePort() {
-        try (ServerSocket socket = new ServerSocket(0)) {
-            return String.valueOf(socket.getLocalPort());
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
     }
 }

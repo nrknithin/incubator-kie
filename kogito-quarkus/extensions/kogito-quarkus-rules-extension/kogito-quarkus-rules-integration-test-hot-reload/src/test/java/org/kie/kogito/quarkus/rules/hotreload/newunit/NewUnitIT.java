@@ -18,16 +18,14 @@
  */
 package org.kie.kogito.quarkus.rules.hotreload.newunit;
 
-import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.net.ServerSocket;
 import java.util.List;
 
-import org.eclipse.microprofile.config.ConfigProvider;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
+import org.kie.kogito.test.utils.SocketUtils;
 
 import io.quarkus.test.QuarkusDevModeTest;
 import io.restassured.http.ContentType;
@@ -59,23 +57,21 @@ public class NewUnitIT {
                     "    /persons[adult, $name: name];\n" +
                     "end";
 
-    // Share a dynamically chosen free port between the dev-mode app and this test via a
-    // system property (highest-ordinal config source); since Quarkus 3.33 dev mode no
-    // longer writes its resolved port back for tests to read.
-    static {
-        System.setProperty("quarkus.http.port", findFreePort());
-    }
+    // Pick a free port up front and hand it to the dev-mode app through the archive's
+    // application.properties; since Quarkus 3.33 dev mode no longer writes its resolved
+    // port back for tests to read.
+    final static int httpPort = SocketUtils.findAvailablePort();
 
     @RegisterExtension
     final static QuarkusDevModeTest test = new QuarkusDevModeTest().setArchiveProducer(
             () -> ShrinkWrap.create(JavaArchive.class)
                     .addClass(Person.class)
                     .addClass(PersonUnit.class)
+                    .addAsResource(new StringAsset("quarkus.kogito.devservices.enabled=false\nquarkus.http.port=" + httpPort), "application.properties")
                     .addAsResource("adult.txt", DRL_RESOURCE_FILE + ".dummy")); // add a dummy file only to enforce creation of reasource folder
 
     @Test
     public void testServletChange() {
-        String httpPort = ConfigProvider.getConfig().getValue("quarkus.http.port", String.class);
         String personsPayload = "{\"persons\":[{\"name\":\"Mario\",\"age\":45,\"adult\":false},{\"name\":\"Sofia\",\"age\":17,\"adult\":false}]}";
 
         test.addResourceFile(DRL_RESOURCE_FILE, DRL_SOURCE);
@@ -93,13 +89,5 @@ public class NewUnitIT {
 
         assertEquals(1, names.size());
         assertTrue(names.contains("Mario"));
-    }
-
-    private static String findFreePort() {
-        try (ServerSocket socket = new ServerSocket(0)) {
-            return String.valueOf(socket.getLocalPort());
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
     }
 }
