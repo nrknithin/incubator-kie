@@ -62,7 +62,7 @@ public class JobServiceModelFilter implements OASFilter {
         Components components = openAPI.getComponents();
         Map<String, Schema> schemas = components != null ? components.getSchemas() : null;
         if (schemas == null) {
-            LOGGER.warn("No component schemas are present in the OpenAPI document, skipping job service schema adjustments.");
+            LOGGER.debug("No component schemas are present in the OpenAPI document, skipping job service schema adjustments.");
             return;
         }
 
