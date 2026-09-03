@@ -41,6 +41,9 @@
   <properties>
     <version.io.quarkus>3.33.3.1</version.io.quarkus>
     <version.io.quarkus.camel>3.33.2</version.io.quarkus.camel>
+    <!-- Quarkus-platform-aligned pin. kie-parent keeps the Spring Boot / framework-neutral value;
+         this tree needs the platform one (smallrye-reactive-messaging 4.33.0 requires Mutiny 3). -->
+    <version.io.smallrye.mutiny>3.1.1</version.io.smallrye.mutiny>
     <!-- Used to define which poms are allowed to have dependencyManagement sections. This is to enforce the convention that only the root pom should have dependencyManagement, and all other poms should inherit from it. -->
     <allowedPomsList>org.kie:kie-quarkus-build-parent</allowedPomsList>
     <!-- To be overridden by poms with dependency management -->
