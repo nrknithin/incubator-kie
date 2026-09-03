@@ -143,6 +143,7 @@
     <version.io.cloudevents>3.0.0</version.io.cloudevents>
     <version.io.fabric8>7.3.1</version.io.fabric8>
     <version.io.fabric8.kubernetes-client>7.3.1</version.io.fabric8.kubernetes-client>
+    <version.io.grpc>1.76.0</version.io.grpc>
     <version.io.micrometer>1.16.6</version.io.micrometer>
     <version.io.netty>4.1.136.Final</version.io.netty>
     <version.io.opentelemetry>1.0.0-alpha</version.io.opentelemetry>
@@ -154,6 +155,7 @@
     <version.io.smallrye.jandex>3.5.3</version.io.smallrye.jandex>
     <version.io.smallrye.mutiny>2.9.5</version.io.smallrye.mutiny>
     <version.io.smallrye.openapi.core>4.2.4</version.io.smallrye.openapi.core>
+    <version.io.smallrye.reactive.messaging.in.memory>4.28.0</version.io.smallrye.reactive.messaging.in.memory>
     <version.io.smallrye.reactive.mutiny-vertx-web-client>3.21.6</version.io.smallrye.reactive.mutiny-vertx-web-client>
     <!-- Mutiny Zero Flow Adapters -->
     <version.io.smallrye.reactive.mutiny-zero>1.1.1</version.io.smallrye.reactive.mutiny-zero>
@@ -751,6 +753,52 @@
           </exclusion>
         </exclusions>
       </dependency>
+      <!-- gRPC dependencies -->
+      <dependency>
+        <groupId>io.grpc</groupId>
+        <artifactId>grpc-api</artifactId>
+        <version>${version.io.grpc}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.grpc</groupId>
+        <artifactId>grpc-context</artifactId>
+        <version>${version.io.grpc}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.grpc</groupId>
+        <artifactId>grpc-core</artifactId>
+        <version>${version.io.grpc}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.grpc</groupId>
+        <artifactId>grpc-netty</artifactId>
+        <version>${version.io.grpc}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.grpc</groupId>
+        <artifactId>grpc-netty-shaded</artifactId>
+        <version>${version.io.grpc}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.grpc</groupId>
+        <artifactId>grpc-protobuf</artifactId>
+        <version>${version.io.grpc}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.grpc</groupId>
+        <artifactId>grpc-protobuf-lite</artifactId>
+        <version>${version.io.grpc}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.grpc</groupId>
+        <artifactId>grpc-stub</artifactId>
+        <version>${version.io.grpc}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.grpc</groupId>
+        <artifactId>grpc-util</artifactId>
+        <version>${version.io.grpc}</version>
+      </dependency>
       <!-- Used by drools-metric -->
       <dependency>
         <groupId>io.micrometer</groupId>
@@ -1002,6 +1050,11 @@
         <groupId>io.smallrye.reactive</groupId>
         <artifactId>smallrye-mutiny-vertx-web-client</artifactId>
         <version>${version.io.smallrye.reactive.mutiny-vertx-web-client}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.smallrye.reactive</groupId>
+        <artifactId>smallrye-reactive-messaging-in-memory</artifactId>
+        <version>${version.io.smallrye.reactive.messaging.in.memory}</version>
       </dependency>
       <!-- OAS v3 -->
       <dependency>
