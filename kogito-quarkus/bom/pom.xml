@@ -63,7 +63,6 @@
       <!-- Framework-specific pins moved out of kie-parent: only this tree declares these artifacts. -->
     <version.io.smallrye-health>4.3.0</version.io.smallrye-health>
     <version.com.github.stephenc.jcip>1.0-1</version.com.github.stephenc.jcip>
-    <version.net.minidev.jsonsmart>2.4.10</version.net.minidev.jsonsmart>
     <version.org.graalvm.nativeimage>23.1.2</version.org.graalvm.nativeimage>
     <version.org.jredisearch>2.2.0</version.org.jredisearch>
     <version.org.json>20231013</version.org.json>
@@ -75,11 +74,6 @@
         <artifactId>jcip-annotations</artifactId>
         <version>${version.com.github.stephenc.jcip}</version>
         <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>net.minidev</groupId>
-        <artifactId>json-smart</artifactId>
-        <version>${version.net.minidev.jsonsmart}</version>
       </dependency>
       <dependency>
         <groupId>org.graalvm.nativeimage</groupId>
