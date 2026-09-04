@@ -57,16 +57,10 @@
          Remove this pin once spring-boot-dependencies imports jackson-databind >= 3.1.5. -->
     <version.tools.jackson.core>3.1.5</version.tools.jackson.core>
     <!-- Framework-specific pins moved out of kie-parent: only this tree declares these artifacts. -->
-    <version.org.reactivestreams>1.0.4</version.org.reactivestreams>
     <version.org.spockframework>2.2-groovy-4.0</version.org.spockframework>
 </properties>
   <dependencyManagement>
     <dependencies>
-      <dependency>
-        <groupId>org.reactivestreams</groupId>
-        <artifactId>reactive-streams</artifactId>
-        <version>${version.org.reactivestreams}</version>
-      </dependency>
       <dependency>
         <groupId>org.spockframework</groupId>
         <artifactId>spock-core</artifactId>
