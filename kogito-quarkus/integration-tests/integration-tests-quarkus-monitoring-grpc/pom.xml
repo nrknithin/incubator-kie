@@ -55,10 +55,10 @@
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-grpc</artifactId>
     </dependency>
-    <!-- REST capability: KogitoAssetsProcessor#generateSources requires RESTEASY + RESTEASY_JSON_JACKSON -->
+    <!-- REST capability: KogitoAssetsProcessor#generateSources requires a REST + Jackson capability (quarkus-rest, aligned with the add-on runtime) -->
     <dependency>
       <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-resteasy-jackson</artifactId>
+      <artifactId>quarkus-rest-jackson</artifactId>
     </dependency>
 
     <!-- test dependencies -->
